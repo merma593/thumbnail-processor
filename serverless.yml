@@ -1,0 +1,63 @@
+service: thumbnail-processor
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x 
+  timeout: 120 
+  stage: dev
+  region: ap-southeast-2
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 's3:ListBucket'
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - 's3:DeleteObject'
+            - 's3:CopyObject'
+          Resource:
+            - 'arn:aws:s3:::unprocessed-images-sls'
+        - Effect: Allow
+          Action:
+            - 's3:GetObject'
+            - 's3:GetObjectAttributes'
+            - 's3:DeleteObject'
+            - 's3:CopyObject'
+          Resource:
+            - 'arn:aws:s3:::unprocessed-images-sls/*'
+        - Effect: Allow
+          Action:
+            - 's3:GetObject'
+            - 's3:GetObjectAttributes'
+            - 's3:PutObject'
+          Resource:
+            - 'arn:aws:s3:::processed-thumbnails-sls/*'
+
+functions:
+  processOriginalImageFromS3:
+    handler: index.processImageFromS3
+    events:
+      - s3:
+          bucket: unprocessed-images-sls
+          event: s3:ObjectCreated:*
+          existing: true
+
+  processThumbnailImageFromS3:
+    handler: index.processImageFromS3
+    events:
+      - s3:
+          bucket: processed-thumbnails-sls
+          event: s3:ObjectCreated:*
+          existing: true
+resources:
+  Resources:
+    UnprocessedBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: unprocessed-images-sls
+    ProcessedBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: processed-thumbnails-sls
