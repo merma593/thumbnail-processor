@@ -24,34 +24,34 @@ const getObject = async (bucketName, bucketKey) => {
     }
 };
 
-const moveObject = async (bucketName, sourceKey, destinationFolder) => {
-  console.log("CopySource", `${bucketName}/${sourceKey}`)
-  console.log("Bucket", bucketName)
-  console.log("new object key", `${destinationFolder}/${sourceKey}`)
-  const copyParams = {
-    CopySource: `${bucketName}/${sourceKey}`,
-    Bucket: bucketName,
-    Key: `${destinationFolder}/${sourceKey}`
-  };
+// const moveObject = async (bucketName, sourceKey, destinationFolder) => {
+//   console.log("CopySource", `${bucketName}/${sourceKey}`)
+//   console.log("Bucket", bucketName)
+//   console.log("new object key", `${destinationFolder}/${sourceKey}`)
+//   const copyParams = {
+//     CopySource: `${bucketName}/${sourceKey}`,
+//     Bucket: bucketName,
+//     Key: `${destinationFolder}/${sourceKey}`
+//   };
 
-  const deleteParams = {
-    Bucket: bucketName,
-    Key: sourceKey
-  };
+//   const deleteParams = {
+//     Bucket: bucketName,
+//     Key: sourceKey
+//   };
 
-  try {
-    const copyCommand = new CopyObjectCommand(copyParams);
-    await client.send(copyCommand);
+//   try {
+//     const copyCommand = new CopyObjectCommand(copyParams);
+//     await client.send(copyCommand);
 
-    const deleteCommand = new DeleteObjectCommand(deleteParams);
-    await client.send(deleteCommand);
+//     const deleteCommand = new DeleteObjectCommand(deleteParams);
+//     await client.send(deleteCommand);
 
-    console.log(`Object moved successfully to '${destinationFolder}' folder`);
-  } catch (err) {
-    console.error("Error moving object:", err);
-    throw err; 
-  }
-};
+//     console.log(`Object moved successfully to '${destinationFolder}' folder`);
+//   } catch (err) {
+//     console.error("Error moving object:", err);
+//     throw err; 
+//   }
+// };
 
 const putObject = async (bucketName, bucketKey, data) => {
   const params = {
